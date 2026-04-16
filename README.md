@@ -57,10 +57,11 @@ C++ Modülleri proje kök dizininde karmaşayı önlemek amacıyla sınıflandı
 
 ---
 
-### ☁️ DevOps & Full-Stack Mimari
+### ☁️ DevOps, Sistem & Full-Stack Mimari
 
 | Proje Adı | Konu / İlgi Alanı |
 | :--- | :--- |
+| [Born2beroot](./born2beroot) | Sanal Sunucu İnşası, LVM, SSH & Sistem Yönetimi (SysAdmin) |
 | [Inception](./inception) | System Administration, Sanallaştırma, NGINX & Docker Kümeleri |
 | [ft_transcendence](./ft_transcendence) | Monolithic API dizaynı, Live Game WebSockets & SPA Frontend Mimarisi |
 
