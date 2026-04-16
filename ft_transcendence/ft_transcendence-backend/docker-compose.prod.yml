@@ -1,0 +1,74 @@
+version: '3.8'
+
+services:
+  backend:
+    build:
+      context: ./backend
+      target: production
+    container_name: ft_transcendence_backend_prod
+    ports:
+      - "443:3000"
+    environment:
+      - NODE_ENV=production
+      - PORT=3000
+      - HOST=0.0.0.0
+      - DATABASE_PATH=/app/database/transcendence.db
+      - JWT_SECRET=${JWT_SECRET}
+      - JWT_ACCESS_EXPIRY=15m
+      - JWT_REFRESH_EXPIRY=7d
+      - FORTYTWO_CLIENT_ID=${FORTYTWO_CLIENT_ID}
+      - FORTYTWO_CLIENT_SECRET=${FORTYTWO_CLIENT_SECRET}
+      - FORTYTWO_CALLBACK_URL=${FORTYTWO_CALLBACK_URL}
+      - SMTP_HOST=${SMTP_HOST:-smtp.gmail.com}
+      - SMTP_PORT=${SMTP_PORT:-587}
+      - SMTP_USER=${SMTP_USER}
+      - SMTP_PASS=${SMTP_PASS}
+      - SMTP_FROM=${SMTP_FROM}
+      - TWO_FACTOR_APP_NAME=ft_transcendence
+      - SSL_KEY_PATH=/app/certs/key.pem
+      - SSL_CERT_PATH=/app/certs/cert.pem
+      - CORS_ORIGIN=${CORS_ORIGIN}
+      - BCRYPT_SALT_ROUNDS=12
+      - RATE_LIMIT_MAX=${RATE_LIMIT_MAX:-100}
+      - RATE_LIMIT_WINDOW_MS=${RATE_LIMIT_WINDOW_MS:-60000}
+      - UPLOAD_DIR=./uploads
+      - MAX_FILE_SIZE=${MAX_FILE_SIZE:-5242880}
+    volumes:
+      - backend_data:/app/database
+      - ./certs:/app/certs:ro
+      - backend_uploads:/app/uploads
+      - backend_logs:/app/logs
+    networks:
+      - transcendence_network
+    restart: always
+    healthcheck:
+      test: [ "CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:3000/health" ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 15s
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+          memory: 512M
+        reservations:
+          cpus: '0.25'
+          memory: 128M
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+volumes:
+  backend_data:
+    driver: local
+  backend_uploads:
+    driver: local
+  backend_logs:
+    driver: local
+
+networks:
+  transcendence_network:
+    driver: bridge
